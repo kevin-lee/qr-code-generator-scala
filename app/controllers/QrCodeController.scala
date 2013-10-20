@@ -1,21 +1,16 @@
 package controllers
 
-import net.glxn.qrgen._
-import net.glxn.qrgen.image._
-import play.api.data._
-import play.api.data.Forms._
-import play.api.libs.iteratee.Enumerator
-import play.api.mvc._
-import play.api.libs.json.Json
-
 import models.Message
-import models.QrInfo
-import models.QrInfo
 import models.MessageType
-
-import java.util.concurrent.TimeUnit
-import org.apache.commons.codec.binary.Base64
-import services.QrCodeGenerator
+import models.QrInfo
+import play.api.data.Form
+import play.api.data.Forms.mapping
+import play.api.data.Forms.number
+import play.api.data.Forms.text
+import play.api.libs.json.Json
+import play.api.libs.json.Json.toJsFieldJsValueWrapper
+import play.api.mvc.Action
+import play.api.mvc.Controller
 import services.Base64CodeGenerator
 
 /**
@@ -41,7 +36,7 @@ object QrCodeController extends Controller {
     val qrCode = qrCodeGenerator.generate(qrInfo)
     val message = Message(MessageType.Success, "Success: QR code generation", "QR code has been successfully generated.")
 
-    val result = Json.obj(
+    Ok(Json.obj(
       "success" -> true,
       "message" -> Json.obj(
         "messageType" -> message.messageType.value,
@@ -50,7 +45,6 @@ object QrCodeController extends Controller {
       "url" -> qrInfo.url,
       "qrUrl" -> qrCode,
       "width" -> qrInfo.width,
-      "height" -> qrInfo.height)
-    Ok(result)
+      "height" -> qrInfo.height))
   }
 }
