@@ -1,0 +1,13 @@
+  @(additionalCssBeforeDoc: Html = Html.empty, additionalCssAfterDoc: Html = Html.empty)
+  <link type="text/css" href="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.css"))" rel="stylesheet" />
+  <link type="text/css" href="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap-theme.min.css"))" rel="stylesheet" />
+  <link type="text/css" href="@routes.Assets.at("stylesheets/sticky-footer-navbar.min.css")" rel="stylesheet" />
+
+  @additionalCssBeforeDoc
+  @additionalCssAfterDoc
+
+  <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+    <script src="@routes.WebJarAssets.at(WebJarAssets.locate("html5shiv.min.js"))"></script>
+    <script src="@routes.WebJarAssets.at(WebJarAssets.locate("respond.min.js"))"></script>
+  <![endif]-->

@@ -1,0 +1,5 @@
+@(additionJs: Html = Html.empty)
+  @allJs()
+  <script type="text/javascript" src="@routes.Application.javascriptRoutes"></script>
+  @additionJs
+  <script type="text/javascript" src="@routes.Assets.at("javascripts/init.min.js")"></script>

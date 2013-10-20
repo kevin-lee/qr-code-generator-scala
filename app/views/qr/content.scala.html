@@ -1,0 +1,75 @@
+  <div class="row">
+    <div class="col-sm-12 col-md-12">
+    <h2>QR Code Generator</h2>
+    </div>
+  </div>
+  <br />
+  <div class="row">
+    <div class="col-sm-12 col-md-12">
+      <div class="alert alert-info">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        This simple application is built using Scala, Play Framework, CoffeeScript, jQuery and Twitter Bootstrap.
+      </div>
+    </div>
+  </div>
+  <div id="messageBox" class="row hidden">
+    <div class="col-sm-12 col-md-12">
+      <div class="alert alert-danger">
+        @*<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>*@
+        <button type="button" class="close" id="messageBoxCloseButton">×</button>
+        <h4 id="messageBoxTitle"></h4>
+        <span id="messageBoxMessage"></span>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12 col-md-12">
+      <div class="form-group">
+        <label for="qrCodeUrl">URL or Email Address</label>
+        <div class="input-group" id="qrCodeUrlGroup">
+          <input type="text" class="form-control" id="qrCodeUrl" placeholder="http://">
+          <span class="input-group-btn">
+            <button class="btn btn-default" type="button" id="clearUrlButton" disabled><span class="glyphicon glyphicon-remove"></span></button>
+          </span>
+        </div><!--/.input-group -->
+      </div><!--/.form-group -->
+      <div class="form-group">
+        <!-- will be re-enabled later with the sider -->
+        <label class="checkbox-inline hidden">
+          <input type="checkbox" id="customizedSize" /> Change Size
+        </label>
+        <span class="pull-right">
+          Use
+          <label>
+            <input type="radio" name="processUsing" id="processUsing1" value="javascript" checked /> JavaScript
+          </label>
+          <label>
+            <input type="radio" name="processUsing" id="processUsing2" value="scala" /> Scala
+          </label>
+        </span>
+      </div><!--/.form-group -->
+      <br />
+      <!-- will be re-enabled later with the sider -->
+      <div class="form-inline hidden">
+        <div class="form-group">
+          <label for="qrCodeWidth">Width</label>
+          <input type="text" class="form-control" id="qrCodeWidth" placeholder="Width in pixels" value="" disabled>
+        </div>
+        <div class="form-group">
+          <label for="qrCodeHeight">Height</label>
+          <input type="text" class="form-control" id="qrCodeHeight" placeholder="Height in pixels" value="" disabled>
+        </div>
+      </div>
+      <br />
+      <div id="ieMessage"></div>
+      <div class="form-group">
+        <button type="button" class="btn btn-primary btn-lg btn-block" disabled id="generateButton">Generate</button>
+        <button type="button" class="btn btn-danger btn-lg btn-block" disabled id="resetAllButton">Reset All</button>
+      </div><!--/.form-group -->
+    </div><!--/.col-sm-12 col-md-12 -->
+  </div><!--/.row -->
+  <div class="row resultBox hidden" id="resultMain">
+    <div id="qrAreaOutter" class="col-sm-12 col-md-12" style="text-align: center;" >
+      <div id="qrArea" class="embed-container"></div>
+    </div>
+  </div>
