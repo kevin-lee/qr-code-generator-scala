@@ -58,7 +58,8 @@ class ApplicationSpec extends Specification {
 
         status(result) must equalTo(OK)
         contentType(result) must beSome.which(_ == "application/json")
-        Json.parse(contentAsString(result)) must equalTo(Json.parse(s"""{
+        Json.parse(contentAsString(result)) must equalTo(Json.parse(s"""
+{
   "success": true,
   "message": {
     "messageType": "${message.messageType.value}",
