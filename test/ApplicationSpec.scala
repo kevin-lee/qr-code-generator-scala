@@ -37,6 +37,7 @@ object ApplicationSpec extends Properties {
     example("serve the context path with no trailing slash", testContextWithoutSlash),
     example("do not redirect a POST to the context path with a trailing slash", testPostContextWithSlash),
     example("do not redirect other paths with a trailing slash", testOtherPathsWithSlash),
+    example("the JavaScript route for generating QR code has the context path", testJavascriptRouteWithContext),
   )
 
   private def withApp(f: Application => Result): Result = {
@@ -103,6 +104,33 @@ object ApplicationSpec extends Properties {
         }
       }
     )
+  }
+
+  private val javascriptRouteUrlPattern = """method:"POST", url:"([^"]+)"""".r
+
+  /** The routes prefix is global. The app with no context runs first, so that the context app starts with the default prefix. */
+  def testJavascriptRouteWithContext: Result = {
+    val defaultPrefixSet = withApp { app =>
+      withRoute(app, FakeRequest(GET, "/"))(home => status(home) ==== OK)
+    }
+    val routeInContext = withContextApp { app =>
+      withRoute(app, FakeRequest(GET, s"$context/assets/javascripts/routes")) { routes =>
+        javascriptRouteUrlPattern.findFirstMatchIn(contentAsString(routes)).map(_.group(1)) match {
+          case Some(url) =>
+            withRoute(
+              app,
+              FakeRequest(POST, url)
+                .withJsonBody(Json.obj("url" -> "http://test.com", "width" -> 512, "height" -> 512))
+            ) { result =>
+              Result.all(List(url ==== context, status(result) ==== OK))
+            }
+
+          case None =>
+            Result.failure.log("The JavaScript routes have no POST route.")
+        }
+      }
+    }
+    Result.all(List(defaultPrefixSet, routeInContext))
   }
 
   def testIndexPage: Result = withApp { app =>
