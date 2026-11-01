@@ -16,7 +16,8 @@ class Application @Inject() (
 ) extends BaseController
     with JavascriptRoutable {
 
-  val javascriptReverseRoute: List[JavaScriptReverseRoute] =
+  /* This must not be a val. The routes prefix is set after this controller is created. */
+  def javascriptReverseRoute: List[JavaScriptReverseRoute] =
     List(controllers.routes.javascript.QrCodeController.generateQr)
 
 }
