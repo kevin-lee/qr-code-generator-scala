@@ -5,8 +5,8 @@ package services
 
 import models.QrInfo
 import org.apache.commons.codec.binary.Base64
-import net.glxn.qrgen.QRCode
-import net.glxn.qrgen.image.ImageType
+import net.glxn.qrgen.javase.QRCode
+import net.glxn.qrgen.core.image.ImageType
 
 /**
  * @author Lee, SeongHyun (Kevin)

@@ -1,4 +1,4 @@
-@(additionJs: Html = Html.empty)
+@(additionJs: Html = play.twirl.api.HtmlFormat.empty)(implicit webJarsUtil: org.webjars.play.WebJarsUtil)
   @allJs()
   <script type="text/javascript" src="@routes.Application.javascriptRoutes"></script>
   @additionJs

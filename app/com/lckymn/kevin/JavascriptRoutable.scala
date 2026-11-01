@@ -3,24 +3,22 @@
  */
 package com.lckymn.kevin
 
-import play.api._
 import play.api.mvc._
-import play.core.Router.JavascriptReverseRoute
-import play.core.Router._
+import play.api.routing.{JavaScriptReverseRoute, JavaScriptReverseRouter}
 
 /**
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2013-10-14)
  */
-trait JavascriptRoutable extends Results {
-  val javascriptReverseRoute: List[JavascriptReverseRoute]
+trait JavascriptRoutable { self: BaseController =>
 
-  def javascriptRoutes = Action { implicit request =>
-    import controllers.routes.javascript._
+  def javascriptReverseRoute: List[JavaScriptReverseRoute]
+
+  def javascriptRoutes: Action[AnyContent] = Action { implicit request =>
     Ok(
-      Routes.javascriptRouter("jsRoutes")(
-        javascriptReverseRoute:_*
+      JavaScriptReverseRouter("jsRoutes")(
+        javascriptReverseRoute: _*
       )
-    ).as("text/javascript") 
+    ).as("text/javascript")
   }
 }

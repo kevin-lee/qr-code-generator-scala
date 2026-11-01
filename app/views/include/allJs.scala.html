@@ -1,2 +1,3 @@
-  <script type="text/javascript" src="@routes.WebJarAssets.at(WebJarAssets.locate("jquery.min.js"))"></script> 
-  <script type="text/javascript" src="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.js"))"></script>
+@()(implicit webJarsUtil: org.webjars.play.WebJarsUtil)
+  @webJarsUtil.locate("jquery", "jquery.min.js").script()
+  @webJarsUtil.locate("bootstrap", "js/bootstrap.min.js").script()
