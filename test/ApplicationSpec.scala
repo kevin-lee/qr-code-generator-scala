@@ -31,10 +31,23 @@ object ApplicationSpec extends Properties {
     example("post with an invalid width", testInvalidWidth),
     example("post with a session cookie but no CSRF token", testPostWithoutCsrfToken),
     example("post with the session cookie and the CSRF token from the index page", testPostWithCsrfToken),
+    example("the session cookie has the Secure flag", testSessionCookieSecure),
+    example("redirect the context path with a trailing slash", testContextWithSlash),
+    example("keep the query in the redirect of the context path", testContextWithSlashAndQuery),
+    example("serve the context path with no trailing slash", testContextWithoutSlash),
+    example("do not redirect a POST to the context path with a trailing slash", testPostContextWithSlash),
+    example("do not redirect other paths with a trailing slash", testOtherPathsWithSlash),
   )
 
   private def withApp(f: Application => Result): Result = {
     val app = new GuiceApplicationBuilder().build()
+    running(app)(f(app))
+  }
+
+  private val context = "/qr-code-generator-scala"
+
+  private def withContextApp(f: Application => Result): Result = {
+    val app = new GuiceApplicationBuilder().configure("play.http.context" -> context).build()
     running(app)(f(app))
   }
 
@@ -46,6 +59,50 @@ object ApplicationSpec extends Properties {
   def testBadRequest: Result = withApp { app =>
     val result = route(app, FakeRequest(GET, "/boum")).map(status(_))
     result ==== Some(NOT_FOUND)
+  }
+
+  def testSessionCookieSecure: Result = withApp { app =>
+    withRoute(app, FakeRequest(GET, "/")) { home =>
+      app.injector.instanceOf[SessionCookieBaker].encodeAsCookie(session(home)).secure ==== true
+    }
+  }
+
+  def testContextWithSlash: Result = withContextApp { app =>
+    withRoute(app, FakeRequest(GET, s"$context/")) { result =>
+      Result.all(List(status(result) ==== MOVED_PERMANENTLY, redirectLocation(result) ==== Some(context)))
+    }
+  }
+
+  def testContextWithSlashAndQuery: Result = withContextApp { app =>
+    withRoute(app, FakeRequest(GET, s"$context/?a=1")) { result =>
+      redirectLocation(result) ==== Some(s"$context?a=1")
+    }
+  }
+
+  def testContextWithoutSlash: Result = withContextApp { app =>
+    withRoute(app, FakeRequest(GET, context)) { result =>
+      status(result) ==== OK
+    }
+  }
+
+  def testPostContextWithSlash: Result = withContextApp { app =>
+    withRoute(
+      app,
+      FakeRequest(POST, s"$context/")
+        .withJsonBody(Json.obj("url" -> "http://test.com", "width" -> 512, "height" -> 512))
+    ) { result =>
+      status(result) ==== NOT_FOUND
+    }
+  }
+
+  def testOtherPathsWithSlash: Result = withContextApp { app =>
+    Result.all(
+      List(s"$context/boum/", "//example.com/", "/boum/").map { path =>
+        withRoute(app, FakeRequest(GET, path)) { result =>
+          redirectLocation(result) ==== None
+        }
+      }
+    )
   }
 
   def testIndexPage: Result = withApp { app =>
