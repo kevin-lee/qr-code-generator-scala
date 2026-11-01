@@ -4,6 +4,7 @@ import hedgehog._
 import hedgehog.runner._
 import models.Message
 import models.MessageType
+import models.QrInfo
 import net.glxn.qrgen.core.image.ImageType
 import net.glxn.qrgen.javase.QRCode
 import org.apache.commons.codec.binary.Base64
@@ -29,6 +30,10 @@ object ApplicationSpec extends Properties {
     example("render the index page", testIndexPage),
     example("generate QR code", testGenerateQrCode),
     example("post with an invalid width", testInvalidWidth),
+    example("generate QR code with the maximum size", testMaxSize),
+    example("post with a width above the maximum size", testWidthAboveMaxSize),
+    example("post with a height above the maximum size", testHeightAboveMaxSize),
+    example("post with the size that caused OutOfMemoryError", testSizeForOutOfMemoryError),
     example("post with a session cookie but no CSRF token", testPostWithoutCsrfToken),
     example("post with the session cookie and the CSRF token from the index page", testPostWithCsrfToken),
     example("the session cookie has the Secure flag", testSessionCookieSecure),
@@ -206,6 +211,24 @@ object ApplicationSpec extends Properties {
       )
     }
   }
+
+  private def testSize(width: Int, height: Int, expectedStatus: Int): Result = withApp { app =>
+    withRoute(
+      app,
+      FakeRequest(POST, "/")
+        .withJsonBody(Json.obj("url" -> "http://test.com", "width" -> width, "height" -> height))
+    ) { result =>
+      status(result) ==== expectedStatus
+    }
+  }
+
+  def testMaxSize: Result = testSize(QrInfo.MaxSize, QrInfo.MaxSize, OK)
+
+  def testWidthAboveMaxSize: Result = testSize(QrInfo.MaxSize + 1, QrInfo.MaxSize, BAD_REQUEST)
+
+  def testHeightAboveMaxSize: Result = testSize(QrInfo.MaxSize, QrInfo.MaxSize + 1, BAD_REQUEST)
+
+  def testSizeForOutOfMemoryError: Result = testSize(50000, 50000, BAD_REQUEST)
 
   private val csrfTokenPattern = """<meta name="csrf-token" content="([^"]+)">""".r
 

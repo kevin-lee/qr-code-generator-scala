@@ -34,8 +34,8 @@ class QrCodeController @Inject() (
   val qrInfoForm: Form[QrInfo] = Form(
     mapping(
       "url" -> text,
-      "width" -> number,
-      "height" -> number)(QrInfo.apply)(QrInfo.unapply))
+      "width" -> number(max = QrInfo.MaxSize),
+      "height" -> number(max = QrInfo.MaxSize))(QrInfo.apply)(QrInfo.unapply))
 
   private def messageToJson(message: Message): JsObject =
     Json.obj(
