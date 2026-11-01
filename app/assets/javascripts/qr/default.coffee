@@ -258,6 +258,8 @@ class QrCodeGenerator
       "type" : "POST"
       "dataType" : "json"
       "contentType" : "application/json"
+      "headers" :
+        "Csrf-Token" : $("meta[name='csrf-token']").attr("content")
 
     jsRoutes.controllers.QrCodeController.generateQr().ajax({
       "data" : JSON.stringify({
