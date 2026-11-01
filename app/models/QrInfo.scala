@@ -26,6 +26,9 @@ class QrInfo(val url: String, w: Int = 64, h: Int = 64) {
 }
 
 object QrInfo {
+  /* The image is allocated in memory from the size, so a request with a large size can use all of the heap. */
+  val MaxSize: Int = 1024
+
   def apply(url: String) = new QrInfo(url match {
     case null => ""
     case _ => url.trim()
